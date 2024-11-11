@@ -10,6 +10,7 @@ import { BreadcrumbsProvider } from "react-breadcrumbs-dynamic";
 import { Redirect } from "react-router-dom/cjs/react-router-dom.min";
 
 const HomeCakeShop = lazy(() => import("./pages/home/HomeCakeShop"));
+const LoginRegister = lazy( () => import( "./pages/other/LoginRegister" ) );
 
 const App = (props) => {
   useEffect(() => {
@@ -48,6 +49,13 @@ const App = (props) => {
                 {/* Homepages */}
 
                 <Route path={"/home"} component={HomeCakeShop} />
+
+                <Route
+									path={ process.env.PUBLIC_URL + "/auth/:type" }
+									component={ LoginRegister }
+								/>
+
+								<Redirect from="/auth" to="auth/login" />
               </Switch>
             </Suspense>
           </ScrollToTop>
