@@ -14,11 +14,11 @@ const HeaderOne = ({
                     <div className="headerRight">
                         <div className="top_head">
                             <div className="top_left">
-                                {/* Nav menu */}
+                               
                                 <NavMenu />
                             </div>
                             <div className="top_right">
-                                {/* Icon group */}
+                                
                                 <IconGroup />
                             </div>
                         </div>
