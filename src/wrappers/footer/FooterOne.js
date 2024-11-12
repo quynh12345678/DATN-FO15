@@ -29,7 +29,7 @@ const FooterOne = () => {
                         </li>
                         <li>
                             <i className="fa fa-circle-o"></i>
-                            <a>Thanh toán khi nhận hàng</a>
+                            <a>Thanh toán khi nhận hàng nhé</a>
                         </li>
                     </ul>
                 </div>
