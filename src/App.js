@@ -13,6 +13,7 @@ const HomeCakeShop = lazy(() => import("./pages/home/HomeCakeShop"));
 const LoginRegister = lazy(() => import("./pages/other/LoginRegister"));
 const NotFound = lazy(() => import("./pages/other/NotFound"));
 const ShopGridStandard = lazy(() => import("./pages/shop/ShopGridStandard"));
+const Product = lazy(() => import("./pages/shop-product/Product"));
 const App = (props) => {
   useEffect(() => {
     props.dispatch(
