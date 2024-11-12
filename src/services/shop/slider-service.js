@@ -26,7 +26,7 @@ export const showSlideDetail = async (productId, setSlide) => {
 export const getSlidesByFilters = async (params, setSlides) => {
   const data = [
     {
-      avatar: "/view/img/ao-bong-da-tre-em_6995_7_HasThumb_Thumb.jpg",
+      avatar: "/view/img/ao-bong-da-tre-em_6995_7098_HasThumb_Thumb.jpg",
     },
     {
       avatar: "/view/img/qua-bong-da-dong-luc_5523_7493_HasThumb_Thumb.jpg",
