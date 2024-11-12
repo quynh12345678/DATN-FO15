@@ -11,7 +11,7 @@ import { Redirect } from "react-router-dom/cjs/react-router-dom.min";
 
 const HomeCakeShop = lazy(() => import("./pages/home/HomeCakeShop"));
 const LoginRegister = lazy( () => import( "./pages/other/LoginRegister" ) );
-
+const NotFound = lazy( () => import( "./pages/other/NotFound" ) );
 const App = (props) => {
   useEffect(() => {
     props.dispatch(
@@ -56,6 +56,12 @@ const App = (props) => {
 								/>
 
 								<Redirect from="/auth" to="auth/login" />
+                <Route
+									path={ process.env.PUBLIC_URL + "/not-found" }
+									component={ NotFound }
+								/>
+
+								<Route exact component={ NotFound } />
               </Switch>
             </Suspense>
           </ScrollToTop>
