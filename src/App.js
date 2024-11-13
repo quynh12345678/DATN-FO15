@@ -15,6 +15,7 @@ const NotFound = lazy(() => import("./pages/other/NotFound"));
 const ShopGridStandard = lazy(() => import("./pages/shop/ShopGridStandard"));
 const Product = lazy(() => import("./pages/shop-product/Product"));
 const Cart = lazy(() => import("./pages/other/Cart"));
+const resetPassword = lazy( () => import( "./pages/other/resetPassword" ) );
 
 const App = (props) => {
   useEffect(() => {
@@ -60,6 +61,19 @@ const App = (props) => {
                 />
 
                 <Redirect from="/auth" to="auth/login" />
+                <Route
+									path={ process.env.PUBLIC_URL + "/reset-password/:type" }
+									component={ resetPassword }
+								/>
+								<Route
+									path={ process.env.PUBLIC_URL + "/reset-password" }
+									component={ resetPassword }
+								/>
+								<Route
+									path={ process.env.PUBLIC_URL + "/my-account" }
+									component={ MyAccount }
+								/>
+
                 <Route
                   path={process.env.PUBLIC_URL + "/not-found"}
                   component={NotFound}
