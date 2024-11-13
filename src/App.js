@@ -18,6 +18,7 @@ const Cart = lazy(() => import("./pages/other/Cart"));
 const resetPassword = lazy( () => import( "./pages/other/resetPassword" ) );
 const Checkout = lazy( () => import( "./pages/other/Checkout" ) );
 const MyOrder = lazy( () => import( "./pages/other/MyOrder" ) );
+const MyAccount = lazy( () => import( "./pages/other/MyAccount" ) );
 const App = (props) => {
   useEffect(() => {
     props.dispatch(
