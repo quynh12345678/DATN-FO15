@@ -14,6 +14,8 @@ const LoginRegister = lazy(() => import("./pages/other/LoginRegister"));
 const NotFound = lazy(() => import("./pages/other/NotFound"));
 const ShopGridStandard = lazy(() => import("./pages/shop/ShopGridStandard"));
 const Product = lazy(() => import("./pages/shop-product/Product"));
+const Cart = lazy(() => import("./pages/other/Cart"));
+
 const App = (props) => {
   useEffect(() => {
     props.dispatch(
@@ -63,6 +65,10 @@ const App = (props) => {
                   component={NotFound}
                 />
                 <Route path={"/shop"} component={ShopGridStandard} />
+                <Route
+                  path={process.env.PUBLIC_URL + "/cart"}
+                  component={Cart}
+                />
 
                 <Route exact component={NotFound} />
               </Switch>
