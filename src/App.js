@@ -14,6 +14,10 @@ const LoginRegister = lazy(() => import("./pages/other/LoginRegister"));
 const NotFound = lazy(() => import("./pages/other/NotFound"));
 const ShopGridStandard = lazy(() => import("./pages/shop/ShopGridStandard"));
 const Product = lazy(() => import("./pages/shop-product/Product"));
+const Cart = lazy(() => import("./pages/other/Cart"));
+const resetPassword = lazy( () => import( "./pages/other/resetPassword" ) );
+const Checkout = lazy( () => import( "./pages/other/Checkout" ) );
+const MyOrder = lazy( () => import( "./pages/other/MyOrder" ) );
 const App = (props) => {
   useEffect(() => {
     props.dispatch(
@@ -59,11 +63,35 @@ const App = (props) => {
 
                 <Redirect from="/auth" to="auth/login" />
                 <Route
+									path={ process.env.PUBLIC_URL + "/reset-password/:type" }
+									component={ resetPassword }
+								/>
+								<Route
+									path={ process.env.PUBLIC_URL + "/reset-password" }
+									component={ resetPassword }
+								/>
+								<Route
+									path={ process.env.PUBLIC_URL + "/my-account" }
+									component={ MyAccount }
+								/>
+
+                <Route
                   path={process.env.PUBLIC_URL + "/not-found"}
                   component={NotFound}
                 />
                 <Route path={"/shop"} component={ShopGridStandard} />
-
+                <Route
+                  path={process.env.PUBLIC_URL + "/cart"}
+                  component={Cart}
+                />
+                <Route
+									path={ process.env.PUBLIC_URL + "/checkout" }
+									component={ Checkout }
+								/>
+                <Route
+									path={ process.env.PUBLIC_URL + "/my-order" }
+									component={ MyOrder }
+								/>
                 <Route exact component={NotFound} />
               </Switch>
             </Suspense>
