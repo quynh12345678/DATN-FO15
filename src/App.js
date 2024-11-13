@@ -17,6 +17,7 @@ const Product = lazy(() => import("./pages/shop-product/Product"));
 const Cart = lazy(() => import("./pages/other/Cart"));
 const resetPassword = lazy( () => import( "./pages/other/resetPassword" ) );
 const Checkout = lazy( () => import( "./pages/other/Checkout" ) );
+const MyOrder = lazy( () => import( "./pages/other/MyOrder" ) );
 const App = (props) => {
   useEffect(() => {
     props.dispatch(
@@ -87,7 +88,10 @@ const App = (props) => {
 									path={ process.env.PUBLIC_URL + "/checkout" }
 									component={ Checkout }
 								/>
-
+                <Route
+									path={ process.env.PUBLIC_URL + "/my-order" }
+									component={ MyOrder }
+								/>
                 <Route exact component={NotFound} />
               </Switch>
             </Suspense>
