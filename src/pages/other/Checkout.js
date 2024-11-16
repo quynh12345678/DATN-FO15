@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import MetaTags from "react-meta-tags";
 import { connect } from "react-redux";
@@ -22,9 +22,22 @@ const Checkout = ({ location, cartItems, currency, dispatch }) => {
 
 	const { addToast } = useToasts();
 	const [submit, setSubmit] = useState(false);
+	const [total, setTotal] = useState(0);
+	const [amount, setAmount] = useState(0);
 	const [paymentType, setPaymentType] = useState(1);
-	const [voucher, setVoucher] = useState( null);
+	const [voucher, setVoucher] = useState(null);
 	const [form] = useForm();
+	useEffect(() => {
+		setPrice()
+	});
+
+	const setPrice = () => {
+		var price = cartTotalPrice;
+		if (amount) {
+			price = (price * (100 - amount)) / 100
+		}
+		setTotal(price)
+	}
 	const submitForm = async (e) => {
 		dispatch(toggleShowLoading(true))
 		const response = await Voucher_Service.detail({ voucher: e.voucher });
@@ -52,8 +65,9 @@ const Checkout = ({ location, cartItems, currency, dispatch }) => {
 				appearance: "success",
 				autoDismiss: true
 			});
-			cartTotalPrice = (cartTotalPrice * (100 - amount)) / 100
 			setVoucher(e.voucher)
+			setAmount(amount)
+			setPrice()
 		}
 		dispatch(toggleShowLoading(false))
 	}
@@ -161,7 +175,7 @@ const Checkout = ({ location, cartItems, currency, dispatch }) => {
 													<ul>
 														<li className="order-total">Giá trị đơn hàng</li>
 														<li>
-															{customNumber(cartTotalPrice.toFixed(2), '₫')}
+															{customNumber(total.toFixed(0), '₫')}
 														</li>
 													</ul>
 												</div>
