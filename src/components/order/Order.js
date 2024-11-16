@@ -1,11 +1,11 @@
-import { Pagination } from "antd";
+import { message, Pagination } from "antd";
 import React, { useEffect, useState } from "react";
 import { Accordion, Card, Table } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
 import { customDate, customNumber } from "../../helpers/func";
 import { toggleShowLoading } from "../../redux/actions/common";
-import { ORDER_SERVICE, buildImage, onErrorImage } from "../../services";
+import { ORDER_SERVICE, TRANSACTION_SERVICE, buildImage, onErrorImage } from "../../services";
 
 const Order = (props) => {
 
@@ -24,24 +24,42 @@ const Order = (props) => {
 
         }
     };
+    const cancelOrder = async (id) => {
+        const response = await TRANSACTION_SERVICE.changeStatus(id, -1);
+
+        if (response?.status == 'success') {
+			message.success("Hủy đơn thành công")
+            getOrders()
+        } else {
+			message.error( response?.message || 'Hủy đơn thất bại' );
+		}
+    };
+
+    const completeOrder = async (id) => {
+        const response = await TRANSACTION_SERVICE.changeStatus(id, 4);
+
+        if (response?.status == 'success') {
+			message.success("Hoàn tất đơn thành công")
+            getOrders()
+        } else {
+			message.error( response?.message || 'Hoàn tất đơn thất bại' );
+		}
+    };
 
     const genStatus = (status) => {
         if (status === 1) return <p className="text-warning mb-0 ">Tiếp nhận</p>;
         else if (status === 2) return <p className="text-primary mb-0">Đang vận chuyển</p>;
-        else if (status === 3) return <p className="text-success mb-0">Đã bàn giao</p>;
-        else return <p className="text-danger mb-0">Hủy bỏ</p>;
+        else if (status === 3) return <p className="text-primary mb-0">Đã giao hàng</p>;
+        else if (status === 4) return <p className="text-success mb-0">Hoàn thành</p>;
+        else if (status === 5) return <p className="text-secondary mb-0">Chờ xác nhận</p>;
+        else if (status === 6) return <p className="text-success mb-0">Đã xác nhận</p>;
+        else return <p className="text-danger mb-0">Đã hủy</p>;
     }
 
     const genPaymentType = (status) => {
 
         if (status === 2) return <div className="text-secondary" style={{ fontWeight: 600, fontSize: 18 }}>Thanh toán online</div>;
         return <div className="text-primary" style={{ fontWeight: 600, fontSize: 18 }}>Tiền mặt</div>;
-    }
-
-    const genShippingStatus = (status) => {
-        if (status === 1) return <span style={{ fontWeight: 600, fontSize: 18 }} className="text-warning">Chờ giao hàng</span>;
-        else if (status === 2) return <span style={{ fontWeight: 600, fontSize: 18 }} className="text-primary">Đang giao</span>;
-        else return <span style={{ fontWeight: 600, fontSize: 18 }} className="text-success">Đã giao</span>;
     }
 
     return (
@@ -119,60 +137,66 @@ const Order = (props) => {
                                                                 {item?.voucher?.amount &&
                                                                     <>
 
-                                                                    <div className="row mb-md-3 pt-md-3">
-                                                                        <div className="col-sm-9">
-                                                                            <span style={{ fontWeight: 600, fontSize: 18, color: 'red' }}>Giảm giá:</span>
+                                                                        <div className="row mb-md-3 pt-md-3">
+                                                                            <div className="col-sm-9">
+                                                                                <span style={{ fontWeight: 600, fontSize: 18, color: 'red' }}>Giảm giá:</span>
+                                                                            </div>
+                                                                            <div className="col-sm-3 text-right">
+                                                                                <span style={{ fontWeight: 600, fontSize: 18, color: 'red' }}>{item?.voucher?.amount} %</span>
+                                                                            </div>
                                                                         </div>
-                                                                        <div className="col-sm-3 text-right">
-                                                                            <span style={{ fontWeight: 600, fontSize: 18, color: 'red' }}>{item?.voucher?.amount} %</span>
-                                                                        </div>
-                                                                    </div>
-                                                                </>
-                                                            }
-                                                            <div className="row mb-md-3 pt-md-3">
-                                                                <div className="col-sm-9">
-                                                                    <span style={{ fontWeight: 600, fontSize: 18, color: 'red' }}>Tổng giá:</span>
-                                                                </div>
-                                                                <div className="col-sm-3 text-right">
-                                                                    <span style={{ fontWeight: 600, fontSize: 18, color: 'red' }}>{customNumber(item.tst_total_money)}</span>
-                                                                </div>
-                                                            </div>
-                                                            <div className="row mb-md-3 pt-md-3">
-                                                                <div className="col-sm-9">
-                                                                    <span style={{ fontWeight: 600, fontSize: 18 }}>Loại thanh toán:</span>
-                                                                </div>
-                                                                <div className="col-sm-3 text-right">
-                                                                    {genPaymentType(item.tst_type)}
-                                                                </div>
-                                                            </div>
-                                                            {/* <div className="row mb-md-3 pt-md-3">
+                                                                    </>
+                                                                }
+                                                                <div className="row mb-md-3 pt-md-3">
                                                                     <div className="col-sm-9">
-                                                                        <span style={{ fontWeight: 600, fontSize: 18 }}>Trạng thái giao hàng:</span>
+                                                                        <span style={{ fontWeight: 600, fontSize: 18, color: 'red' }}>Tổng giá:</span>
                                                                     </div>
                                                                     <div className="col-sm-3 text-right">
-                                                                        {genShippingStatus(1)}
+                                                                        <span style={{ fontWeight: 600, fontSize: 18, color: 'red' }}>{customNumber(item.tst_total_money)}</span>
                                                                     </div>
-                                                                </div> */}
+                                                                </div>
+                                                                <div className="row mb-md-3 pt-md-3">
+                                                                    <div className="col-sm-9">
+                                                                        <span style={{ fontWeight: 600, fontSize: 18 }}>Loại thanh toán:</span>
+                                                                    </div>
+                                                                    <div className="col-sm-3 text-right">
+                                                                        {genPaymentType(item.tst_type)}
+                                                                    </div>
+                                                                </div>
+                                                                {(item.tst_status == 5 || item.tst_status == 6 )&&
+                                                                    <>
+                                                                    <button className="btn btn-danger"
+                                                                        onClick={() => cancelOrder(item.id)}
+                                                                    >Hủy đơn hàng</button>
+                                                                    </>
+                                                                }
+                                                                {item.tst_status == 3 &&
+                                                                    <>
+                                                                    <button className=" btn btn-success"
+                                                                        onClick={() => completeOrder(item.id)}
+                                                                    >Đã nhận hàng</button>
+                                                                    </>
+                                                                }
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </Card.Body>
-                                            </Accordion.Collapse>
-                                        </Card>
+                                                    </Card.Body>
+                                                </Accordion.Collapse>
+                                            </Card>
                                         </div>
-                        ))
-                        :
-                        <div className="text-center">
-                            Chưa Có Sản Phẩm<br />
-                            <br />
-                            <br />
-                            <br />
-                            <Link to="/" style={{ fontSize: 18, color: '#a771ff' }}>Tiếp Tục Mua Sắm...</Link>
-                        </div>
+                                    ))
+                                    :
+                                    <div className="text-center">
+                                        Chưa Có Sản Phẩm<br />
+                                        <br />
+                                        <br />
+                                        <br />
+                                        <Link to="/" style={{ fontSize: 18, color: '#a771ff' }}>Tiếp Tục Mua Sắm...</Link>
+                                    </div>
                                 }
-                    </Accordion>
+                            </Accordion>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
             </div >
         </div >
     );
