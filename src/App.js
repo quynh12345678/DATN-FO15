@@ -71,6 +71,12 @@ const App = (props) => {
 									path={ process.env.PUBLIC_URL + "/reset-password" }
 									component={ resetPassword }
 								/>
+                <Route
+									path={ process.env.PUBLIC_URL + "/product/:id" }
+									render={ ( routeProps ) => (
+										<Product { ...routeProps } key={ routeProps.match.params.id } />
+									) }
+								/>
 								<Route
 									path={ process.env.PUBLIC_URL + "/my-account" }
 									component={ MyAccount }
