@@ -19,6 +19,8 @@ const resetPassword = lazy( () => import( "./pages/other/resetPassword" ) );
 const Checkout = lazy( () => import( "./pages/other/Checkout" ) );
 const MyOrder = lazy( () => import( "./pages/other/MyOrder" ) );
 const MyAccount = lazy( () => import( "./pages/other/MyAccount" ) );
+const Voucher = lazy(() => import("./pages/voucher/Voucher"));
+
 const App = (props) => {
   useEffect(() => {
     props.dispatch(
@@ -99,6 +101,7 @@ const App = (props) => {
 									path={ process.env.PUBLIC_URL + "/my-order" }
 									component={ MyOrder }
 								/>
+                 <Route path={"/voucher"} component={Voucher} />
                 <Route exact component={NotFound} />
               </Switch>
             </Suspense>
