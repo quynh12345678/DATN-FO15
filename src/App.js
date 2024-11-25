@@ -54,16 +54,12 @@ const App = (props) => {
                   path={process.env.PUBLIC_URL + "/"}
                   component={HomeCakeShop}
                 />
-
                 {/* Homepages */}
-
                 <Route path={"/home"} component={HomeCakeShop} />
-
                 <Route
                   path={process.env.PUBLIC_URL + "/auth/:type"}
                   component={LoginRegister}
                 />
-
                 <Redirect from="/auth" to="auth/login" />
                 <Route
 									path={ process.env.PUBLIC_URL + "/reset-password/:type" }
