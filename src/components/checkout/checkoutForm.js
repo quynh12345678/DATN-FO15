@@ -11,6 +11,7 @@ import { getDiscountPrice } from "../../helpers/product";
 import { toggleShowLoading } from "../../redux/actions/common";
 import { TRANSACTION_SERVICE, getItem, onFieldsChange, validateMessages } from "../../services";
 import { Auth_Service } from "../../services/shop/auth-service";
+import { Voucher_Service } from "../../services/shop/voucher-service";
 
 export const CheckoutForm = (props) => {
 	const [form] = useForm();
@@ -20,7 +21,7 @@ export const CheckoutForm = (props) => {
 	const dispatch = useDispatch();
 
 
-	useEffect( async () => {
+	useEffect(async () => {
 		const response = await Auth_Service.profile();
 		if (response?.status == 'success') {
 			let obj = {
@@ -72,6 +73,29 @@ export const CheckoutForm = (props) => {
 			}, []);
 			try {
 				dispatch(toggleShowLoading(true));
+				if (props.voucher) {
+					const response = await Voucher_Service.detail({ voucher: props.voucher });
+					if (response?.status === 'success') {
+						var minimum = response?.content?.minimum;
+						if (response?.content === null) {
+							addToast("Không tìm thấy voucher", {
+								appearance: "error",
+								autoDismiss: true
+							});
+							dispatch(toggleShowLoading(false))
+							return;
+						}
+
+						if (parseInt(cartTotalPrice) < parseInt(minimum)) {
+							addToast("Đơn không đạt giá trị đơn hàng tối thiểu", {
+								appearance: "error",
+								autoDismiss: true
+							});
+							dispatch(toggleShowLoading(false))
+							return;
+						}
+					}
+				}
 				e.voucher = props.voucher
 				let data = {
 					...e,
