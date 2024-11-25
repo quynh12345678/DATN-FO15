@@ -135,6 +135,38 @@ const FooterOne = () => {
           Bản quyền © {new Date().getFullYear()} của chúng tôi{" "}
         </div>
       </div>
+      <div className="actionFix">
+    <ul>
+        <li className="phone">
+            <a href="tel:0989248835" title="Hotline">
+            <i className="fa fa-phone" aria-hidden="true"></i>
+            </a>
+        </li>
+        <li className='icon'>
+            <a href='https://zalo.me/0943039054' target='_blank' title=''>
+            <img alt="" className="lazyload" src='data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw' data-src="https://aobongda.net/pic/banner/zaloicon_8309_HasThumb_Thumb.png" />
+            </a>
+        </li>
+        <li className='icon'>
+            <a href='https://www.messenger.com/t/1847033885584162/?messaging_source=source%3Apages%3Amessage_shortlink&source_id=1441792&recurring_notification=0' target='_blank' title=''>
+            <img alt="" className="lazyload" src='data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw' data-src="https://aobongda.net/pic/banner/thiet-ke-chua-co-ten-53_8182_HasThumb_Thumb.png" />
+            </a>
+        </li>
+        <li className='icon'>
+            <a href='https://shopee.vn/aobongda.net' target='_blank' title=''>
+            <img alt="" className="lazyload" src='data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw' data-src="https://aobongda.net/pic/banner/thiet-ke-chua-co-ten-52_3532_HasThumb_Thumb.png" />
+            </a>
+        </li>
+        <li className='icon'>
+            <a href='https://www.tiktok.com/@aobongdanet.official' target='_blank' title=''>
+            <img alt="" className="lazyload" src='data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw' data-src="https://aobongda.net/pic/banner/tiktokicon_5273_HasThumb_Thumb.png" />
+            </a>
+        </li>
+        <li className="top">
+            <a href="javascript:void(0);" className="btnTop" title="Lên đầu trang"><i className="fa fa-angle-double-up" aria-hidden="true"></i></a>
+        </li>
+    </ul>
+</div>
     </footer>
   );
 };
