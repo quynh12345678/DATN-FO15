@@ -10,7 +10,7 @@ const FooterOne = () => {
             <div className="item infoFooter">
                 <div className="logoBox">
                     <a href='/'>
-                    <img className="logoBox" src="/assets/logo.jpg" />
+                    <img className="logoBox" src="/assets/logoo2.jpg" />
                     </a>
                 </div>
                 <div className="menuBottom">
@@ -25,18 +25,18 @@ const FooterOne = () => {
                         </li>
                         <li>
                             <i className="fa fa-circle-o"></i>
-                            <a>Visa, Master Card</a>
+                            <a>Visa, Masters Cards</a>
                         </li>
                         <li>
                             <i className="fa fa-circle-o"></i>
-                            <a>Thanh toán khi nhận hàng nhé</a>
+                            <a>Thanh toán khi nhận hàng nhé anh em</a>
                         </li>
                     </ul>
                 </div>
             </div>
             <div className='item menuBottom'>
                 <div className='title'>
-                    <a href='javascript:void(0);'  title='HỖ TRỢ KHÁCH HÀNG'>HỖ TRỢ KHÁCH HÀNG</a>
+                    <a href='javascript:void(0);'  title='HỖ TRỢ KHÁCH HÀNG'>HỖ TRỢ KHÁCH HÀNG 24/7</a>
                     <span className='open'></span>
                 </div>
                 <ul>

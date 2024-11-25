@@ -8,8 +8,8 @@ const NavMenu = ( { strings, menuWhiteClass, sidebarMenu } ) =>
 	return (
 		<div className="phone">
 			<i className="fa fa-phone"></i> <span>Hotline: </span>
-			<a href="tel:1234.567.890" title="Hotline">1234.567.890</a> /
-			<a href="tel:6789.123.456" title="Hotline">6789.123.456</a>
+			<a href="tel:1234.567.890" title="Hotline">0396.357.273</a> /
+			<a href="tel:6789.123.456" title="Hotline">0332.702.119</a>
 		</div>
 	);
 };
