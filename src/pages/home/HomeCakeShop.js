@@ -7,8 +7,9 @@ import TabProduct from "../../wrappers/product/TabProduct";
 import HeroSliderTwentyTwo from "../../wrappers/hero-slider/HeroSliderTwentyTwo";
 import { getSlidesByFilters } from "../../services/shop/slider-service";
 import { getProductsByFilter } from "../../services";
+import { Form, Input, message } from "antd";
 
-const HomeCakeShop = () => {
+const HomeCakeShop = (paramHeader) => {
   const [slides, setSlides] = useState(null);
   const [products, setProducts] = useState(null);
   const [params, setParams] = useState({
@@ -20,6 +21,10 @@ const HomeCakeShop = () => {
   });
 
   useState(() => {
+    if (new URLSearchParams(window.location.search).get("status")) {
+      message.success("Thanh toán thành công");
+    }
+
     getSlidesByFilters({ page: 0, pageSize: 20, status: 1 }, setSlides);
   }, []);
 
@@ -31,7 +36,10 @@ const HomeCakeShop = () => {
     <Fragment>
       <MetaTags>
         <title>Áo Bóng Đá</title>
-        <meta name="description" content="Áo Bóng Đá" />
+        <meta
+          name="description"
+          // content="Goatmaster"
+        />
       </MetaTags>
       <LayoutOne headerTop="visible">
         {/* hero slider */}
