@@ -21,10 +21,14 @@ const HomeCakeShop = (paramHeader) => {
   });
 
   useState(() => {
-    if (new URLSearchParams(window.location.search).get("status")) {
+    if (
+      new URLSearchParams(window.location.search).get("status") == "success"
+    ) {
       message.success("Thanh toán thành công");
     }
-
+    if (new URLSearchParams(window.location.search).get("status") == "error") {
+      message.error("Thanh toán thất bại");
+    }
     getSlidesByFilters({ page: 0, pageSize: 20, status: 1 }, setSlides);
   }, []);
 
@@ -87,5 +91,5 @@ const HomeCakeShop = (paramHeader) => {
     </Fragment>
   );
 };
-//trang hompages
+
 export default HomeCakeShop;
