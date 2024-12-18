@@ -13,13 +13,6 @@ import {
   cartItemStock,
   deleteAllFromCart,
 } from "../../redux/actions/cartActions";
-import {
-  addToCart,
-  decreaseQuantity,
-  deleteFromCart,
-  cartItemStock,
-  deleteAllFromCart,
-} from "../../redux/actions/cartActions";
 import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import { checkTimeNow, customNumber } from "../../helpers/func";
@@ -339,8 +332,22 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    addToCart: (item, addToast, quantityCount) => {
-      dispatch(addToCart(item, addToast, quantityCount));
+    addToCart: (
+      item,
+      addToast,
+      quantityCount,
+      selectedProductColor,
+      selectedProductSize
+    ) => {
+      dispatch(
+        addToCart(
+          item,
+          addToast,
+          quantityCount,
+          selectedProductColor,
+          selectedProductSize
+        )
+      );
     },
     decreaseQuantity: (item, addToast) => {
       dispatch(decreaseQuantity(item, addToast));
