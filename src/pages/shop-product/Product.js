@@ -16,8 +16,6 @@ import { RATING_SERVICE } from "../../services/shop/rating-service";
 const Product = ({ location }) => {
   const { pathname } = location;
   const { id } = useParams();
-  console.log(id);
-
   const [productData, setProductData] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [paging, setPaging] = useState({
