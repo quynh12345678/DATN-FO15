@@ -104,7 +104,7 @@ const Cart = ({
                                     to={
                                       process.env.PUBLIC_URL +
                                       "/product/" +
-                                      cartItem.id
+                                      cartItem.pro_slug
                                     }
                                   >
                                     <img
@@ -121,10 +121,12 @@ const Cart = ({
                                     to={
                                       process.env.PUBLIC_URL +
                                       "/product/" +
-                                      cartItem.id
+                                      cartItem.pro_slug
                                     }
                                   >
-                                    {cartItem.pro_name}
+                                    {cartItem.pro_name} <br />
+                                    <p>Màu: {cartItem.selectedProductColor}</p>
+                                    <p>Size: {cartItem.selectedProductSize}</p>
                                   </Link>
                                 </td>
 
@@ -184,7 +186,9 @@ const Cart = ({
                                         addToCart(
                                           cartItem,
                                           addToast,
-                                          quantityCount
+                                          quantityCount,
+                                          cartItem.selectedProductColor,
+                                          cartItem.selectedProductSize
                                         )
                                       }
                                       disabled={
@@ -328,8 +332,22 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    addToCart: (item, addToast, quantityCount) => {
-      dispatch(addToCart(item, addToast, quantityCount));
+    addToCart: (
+      item,
+      addToast,
+      quantityCount,
+      selectedProductColor,
+      selectedProductSize
+    ) => {
+      dispatch(
+        addToCart(
+          item,
+          addToast,
+          quantityCount,
+          selectedProductColor,
+          selectedProductSize
+        )
+      );
     },
     decreaseQuantity: (item, addToast) => {
       dispatch(decreaseQuantity(item, addToast));

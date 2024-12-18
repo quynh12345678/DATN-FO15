@@ -176,6 +176,12 @@ const Checkout = ({ location, cartItems, currency, dispatch }) => {
                                 <li key={key}>
                                   <span className="order-middle-left">
                                     {cartItem.pro_name} X {cartItem.quantity}
+                                    <br />
+                                    <p>
+                                      Màu: {cartItem.selectedProductColor}
+                                      <br />
+                                      Size: {cartItem.selectedProductSize}
+                                    </p>
                                   </span>{" "}
                                   <span className="order-price">
                                     {discountedPrice !== null &&

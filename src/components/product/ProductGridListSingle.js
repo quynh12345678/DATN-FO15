@@ -127,26 +127,13 @@ const ProductGridListSingle = ({
                       Select Option
                     </Link>
                   ) : product.pro_amount && product.pro_amount > 0 ? (
-                    <button
-                      onClick={() => addToCart(product, addToast)}
-                      className={
-                        cartItem !== undefined && cartItem.quantity > 0
-                          ? "active"
-                          : ""
-                      }
-                      disabled={cartItem !== undefined && cartItem.quantity > 0}
-                      title={
-                        cartItem !== undefined
-                          ? "Added to cart"
-                          : "Thêm giỏ hàng"
+                    <Link
+                      to={
+                        process.env.PUBLIC_URL + "/product/" + product.pro_slug
                       }
                     >
-                      {" "}
-                      <i className="pe-7s-cart"></i>{" "}
-                      {cartItem !== undefined && cartItem.quantity > 0
-                        ? "Added"
-                        : "Thêm giỏ hàng"}
-                    </button>
+                      Xem chi tiết
+                    </Link>
                   ) : (
                     <button disabled className="active">
                       Out of Stock
