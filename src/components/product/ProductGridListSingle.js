@@ -1,326 +1,375 @@
-import { message, Pagination } from "antd";
-import React, { useEffect, useState } from "react";
-import { Accordion, Card, Table } from "react-bootstrap";
-import { useDispatch } from "react-redux";
-import { Link } from "react-router-dom/cjs/react-router-dom.min";
-import { customDate, customNumber } from "../../helpers/func";
-import { toggleShowLoading } from "../../redux/actions/common";
-import {
-  ORDER_SERVICE,
-  TRANSACTION_SERVICE,
-  buildImage,
-  onErrorImage,
-} from "../../services";
+// @ts-nocheck
+import PropTypes from "prop-types";
+import React, { Fragment, useState } from "react";
+import { Link } from "react-router-dom";
+import { useToasts } from "react-toast-notifications";
+import { checkTimeNow, customNumber } from "../../helpers/func";
+import { getDiscountPrice } from "../../helpers/product";
+import { buildImage, getItem, onErrorImage } from "../../services";
+import ProductModal from "./ProductModal";
+import Rating from "./sub-components/ProductRating";
 
-const Order = (props) => {
-  const [orders, setOrders] = useState([]);
+const ProductGridListSingle = ({
+  product,
+  currency,
+  addToCart,
+  addToWishlist,
+  addToCompare,
+  cartItem,
+  wishlistItem,
+  compareItem,
+  sliderClassName,
+  spaceBottomClass,
+  removeWishList,
+  deleteFromWishlist,
+}) => {
+  const [modalShow, setModalShow] = useState(false);
+  const { addToast } = useToasts();
 
-  useEffect(() => {
-    getOrders();
-  }, []);
-
-  const getOrders = async () => {
-    const response = await ORDER_SERVICE.getList();
-
-    if (response?.status == "success") {
-      setOrders(response?.shopping?.data);
-    }
-  };
-  const cancelOrder = async (id) => {
-    const response = await TRANSACTION_SERVICE.changeStatus(id, -1);
-
-    if (response?.status == "success") {
-      message.success("Hủy đơn thành công");
-      getOrders();
+  const discountedPrice =
+    checkTimeNow(product?.sale_to) && product.pro_sale
+      ? getDiscountPrice(product.pro_price, product?.pro_sale)
+      : null;
+  const finalProductPrice = +(
+    product.pro_price * currency.currencyRate
+  ).toFixed(0);
+  const finalDiscountedPrice = +(
+    discountedPrice * currency.currencyRate
+  ).toFixed(0);
+  const userId = getItem("id");
+  const actionWishList = async () => {
+    if (removeWishList == true) {
+      deleteFromWishlist(wishlistItem, addToast);
+      window.location.href = "/wishlist";
     } else {
-      message.error(response?.message || "Hủy đơn thất bại");
+      addToWishlist({ ...product, user_like: userId }, addToast);
     }
   };
-
-  const completeOrder = async (id) => {
-    const response = await TRANSACTION_SERVICE.changeStatus(id, 4);
-
-    if (response?.status == "success") {
-      message.success("Hoàn tất đơn thành công");
-      getOrders();
-    } else {
-      message.error(response?.message || "Hoàn tất đơn thất bại");
-    }
-  };
-
-  const genStatus = (status) => {
-    if (status === 5) return <p className="text-warning mb-0 ">Chờ xác nhận</p>;
-    else if (status === 2)
-      return <p className="text-primary mb-0">Đang vận chuyển</p>;
-    else if (status === 3)
-      return <p className="text-primary mb-0">Đã giao hàng</p>;
-    else if (status === 4)
-      return <p className="text-success mb-0">Hoàn thành</p>;
-    else if (status === 6)
-      return <p className="text-success mb-0">Đã xác nhận</p>;
-    else return <p className="text-danger mb-0">Đã hủy</p>;
-  };
-
-  const genPaymentType = (status) => {
-    if (status === 2)
-      return (
-        <div
-          className="text-secondary"
-          style={{ fontWeight: 600, fontSize: 18 }}
-        >
-          Thanh toán online
-        </div>
-      );
-    return (
-      <div className="text-primary" style={{ fontWeight: 600, fontSize: 18 }}>
-        Tiền mặt
-      </div>
-    );
-  };
-
   return (
-    <div className="myaccount-area pb-80 pt-100">
-      <div className="container">
-        <div className="row">
-          <div className="ml-auto mr-auto col-lg-9">
-            <div className="myaccount-wrapper">
-              <Accordion>
-                {orders.length > 0 ? (
-                  orders.map((item, key1) => (
-                    <div key={key1}>
-                      <Card className="single-my-account mb-20">
-                        <Card.Header className="panel-heading">
-                          <Accordion.Toggle
-                            variant="link"
-                            eventKey={String(key1)}
-                          >
-                            <h3 className="panel-title">
-                              <div className="row">
-                                <div className="col-sm-6">
-                                  Đơn hàng {item.id}
-                                </div>
-                                <div className="col-sm-3 text-right">
-                                  {customNumber(item.tst_total_money)}
-                                </div>
-                                <div className="col-sm-3 text-right">
-                                  {genStatus(item.tst_status)}
-                                </div>
-                              </div>
-                            </h3>
-                          </Accordion.Toggle>
-                        </Card.Header>
-                        <Accordion.Collapse eventKey={String(key1)}>
-                          <Card.Body>
-                            <div className="myaccount-info-wrapper">
-                              <div className="mb-5">
-                                <h4>
-                                  Tên người nhận: {item.tst_name} -{" "}
-                                  {item.tst_phone}
-                                </h4>
-                                <p>
-                                  <span style={{ fontWeight: 600 }}>
-                                    Địa chỉ:{" "}
-                                  </span>
-                                  {item.tst_address}
-                                </p>
-                                <p>
-                                  <span style={{ fontWeight: 600 }}>
-                                    Email:{" "}
-                                  </span>
-                                  {item.tst_email}
-                                </p>
-                                <p>
-                                  <span style={{ fontWeight: 600 }}>
-                                    Thời gian tạo:{" "}
-                                  </span>
-                                  {customDate(item?.created_at, "DD/MM/yyyy")}
-                                </p>
-                                <p>
-                                  <span style={{ fontWeight: 600 }}>
-                                    Thời gian cập nhật:{" "}
-                                  </span>
-                                  {customDate(item?.updated_at, "DD/MM/yyyy")}
-                                </p>
-                              </div>
-                              <div className="text-center">
-                                <h4>Sản phẩm</h4>
-                              </div>
-                              <Table
-                                className={`table-striped table-hover mb-5`}
-                                responsive
-                              >
-                                <thead>
-                                  <tr>
-                                    <th>#</th>
-                                    <th className="text-nowrap"> </th>
-                                    <th className="text-nowrap">Số lượng</th>
-                                    <th className="text-nowrap">Giá</th>
-                                    <th className="text-nowrap">Tổng giá</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {item.orders.length > 0 &&
-                                    item.orders.map((order, key2) => (
-                                      <tr key={key2}>
-                                        <td>{key2 + 1}</td>
-                                        <td className="d-flex align-items-center">
-                                          <img
-                                            alt={order.product.pro_name}
-                                            src={buildImage(
-                                              order.product.pro_avatar
-                                            )}
-                                            onError={onErrorImage}
-                                            width={90}
-                                            height={90}
-                                            className="mr-1"
-                                          />
-                                          <div>
-                                            {order.product.pro_name} <br />
-                                            {order.mau && (
-                                              <>
-                                                <span>Màu: {order.mau}</span>{" "}
-                                                <br />
-                                              </>
-                                            )}
-                                            {order.size && (
-                                              <>
-                                                <span>
-                                                  Kích cỡ: {order.size}
-                                                </span>
-                                              </>
-                                            )}
-                                          </div>
-                                        </td>
-                                        <td>{order.od_qty}</td>
-                                        <td>
-                                          {customNumber(
-                                            order.product.pro_price
-                                          )}
-                                        </td>
-                                        <td>
-                                          {customNumber(
-                                            ((order.product.pro_price *
-                                              (100 - order.product.pro_sale)) /
-                                              100) *
-                                              order.od_qty
-                                          )}
-                                        </td>
-                                      </tr>
-                                    ))}
-                                </tbody>
-                              </Table>
-                              <div className="border-top pt-md-3">
-                                {item?.voucher?.amount && (
-                                  <>
-                                    <div className="row mb-md-3 pt-md-3">
-                                      <div className="col-sm-9">
-                                        <span
-                                          style={{
-                                            fontWeight: 600,
-                                            fontSize: 18,
-                                            color: "red",
-                                          }}
-                                        >
-                                          Giảm giá:
-                                        </span>
-                                      </div>
-                                      <div className="col-sm-3 text-right">
-                                        <span
-                                          style={{
-                                            fontWeight: 600,
-                                            fontSize: 18,
-                                            color: "red",
-                                          }}
-                                        >
-                                          {item?.voucher?.amount} %
-                                        </span>
-                                      </div>
-                                    </div>
-                                  </>
-                                )}
-                                <div className="row mb-md-3 pt-md-3">
-                                  <div className="col-sm-9">
-                                    <span
-                                      style={{
-                                        fontWeight: 600,
-                                        fontSize: 18,
-                                        color: "red",
-                                      }}
-                                    >
-                                      Tổng giá:
-                                    </span>
-                                  </div>
-                                  <div className="col-sm-3 text-right">
-                                    <span
-                                      style={{
-                                        fontWeight: 600,
-                                        fontSize: 18,
-                                        color: "red",
-                                      }}
-                                    >
-                                      {customNumber(item.tst_total_money)}
-                                    </span>
-                                  </div>
-                                </div>
-                                <div className="row mb-md-3 pt-md-3">
-                                  <div className="col-sm-9">
-                                    <span
-                                      style={{ fontWeight: 600, fontSize: 18 }}
-                                    >
-                                      Loại thanh toán:
-                                    </span>
-                                  </div>
-                                  <div className="col-sm-3 text-right">
-                                    {genPaymentType(item.tst_type)}
-                                  </div>
-                                </div>
-                                {(item.tst_status == 5 ||
-                                  item.tst_status == 6) && (
-                                  <>
-                                    <button
-                                      className="btn btn-danger"
-                                      onClick={() => cancelOrder(item.id)}
-                                    >
-                                      Hủy đơn hàng
-                                    </button>
-                                  </>
-                                )}
-                                {item.tst_status == 3 && (
-                                  <>
-                                    <button
-                                      className=" btn btn-success"
-                                      onClick={() => completeOrder(item.id)}
-                                    >
-                                      Đã nhận hàng
-                                    </button>
-                                  </>
-                                )}
-                              </div>
-                            </div>
-                          </Card.Body>
-                        </Accordion.Collapse>
-                      </Card>
-                    </div>
-                  ))
-                ) : (
-                  <div className="text-center">
-                    Chưa Có Sản Phẩm
-                    <br />
-                    <br />
-                    <br />
-                    <br />
-                    <Link to="/" style={{ fontSize: 18, color: "#a771ff" }}>
-                      Tiếp Tục Mua Sắm...
+    <Fragment>
+      <div
+        className={`col-lg-3 col-sm-4 ${
+          sliderClassName ? sliderClassName : ""
+        }`}
+      >
+        <div
+          className={`product-wrap ${spaceBottomClass ? spaceBottomClass : ""}`}
+        >
+          <div className="product-img">
+            <Link to={process.env.PUBLIC_URL + "/product/" + product.pro_slug}>
+              <img
+                className="default-img"
+                src={buildImage(product.pro_avatar)}
+                alt={buildImage(product.pro_avatar)}
+                style={{ width: "100%", height: "270px", objectFit: "contain" }}
+                onError={onErrorImage}
+              />
+              {product?.product_images?.length > 0 ? (
+                <img
+                  className="hover-img"
+                  src={buildImage(product.product_images[0].path)}
+                  alt={buildImage(product.product_images[0].path)}
+                  onError={onErrorImage}
+                />
+              ) : (
+                ""
+              )}
+            </Link>
+            {product?.pro_sale &&
+            checkTimeNow(product?.sale_to) &&
+            product.pro_sale ? (
+              <div className="product-img-badges">
+                <span className="pink">-{product?.pro_sale}%</span>
+                {/* {product.new ? <span className="purple">New</span> : ""} */}
+              </div>
+            ) : (
+              ""
+            )}
+
+            <div className="product-action">
+              {userId != null && (
+                <div className="pro-same-action pro-wishlist">
+                  <button
+                    className={wishlistItem !== undefined ? "active" : ""}
+                    disabled={wishlistItem !== undefined && !removeWishList}
+                    title={
+                      wishlistItem !== undefined
+                        ? removeWishList
+                          ? "Remove from wishlist"
+                          : "Added to wishlist"
+                        : "Add to wishlist"
+                    }
+                    onClick={() => actionWishList()}
+                  >
+                    {removeWishList ? (
+                      <i className="fa fa-times" />
+                    ) : (
+                      <i className="pe-7s-like" />
+                    )}
+                  </button>
+                </div>
+              )}
+              {userId != null && (
+                <div className="pro-same-action pro-cart">
+                  {product.affiliateLink ? (
+                    <a
+                      href={product.affiliateLink}
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
+                      {" "}
+                      Buy now{" "}
+                    </a>
+                  ) : product?.variation && product?.variation?.length >= 1 ? (
+                    <Link
+                      to={`${process.env.PUBLIC_URL}/product/${product.id}`}
+                    >
+                      Select Option
                     </Link>
+                  ) : product.pro_amount && product.pro_amount > 0 ? (
+                    <Link
+                      to={
+                        process.env.PUBLIC_URL + "/product/" + product.pro_slug
+                      }
+                    >
+                      Xem chi tiết
+                    </Link>
+                  ) : (
+                    <button disabled className="active">
+                      Out of Stock
+                    </button>
+                  )}
+                </div>
+              )}
+              {/* <div className="pro-same-action pro-quickview">
+								<button onClick={ () => setModalShow( true ) } title="Quick View">
+									<i className="pe-7s-look" />
+								</button>
+							</div> */}
+            </div>
+          </div>
+          <div className="product-content text-center">
+            <h3>
+              <Link
+                to={process.env.PUBLIC_URL + "/product/" + product.pro_slug}
+              >
+                {product.pro_name}
+              </Link>
+            </h3>
+            {product.rating && product.rating > 0 ? (
+              <div className="product-rating">
+                <Rating ratingValue={product.rating} />
+              </div>
+            ) : (
+              ""
+            )}
+            <div className="product-price">
+              {discountedPrice !== null ? (
+                <Fragment>
+                  <span>{customNumber(finalDiscountedPrice, "đ")}</span>{" "}
+                  <span className="old">
+                    {customNumber(finalProductPrice, "đ")}
+                  </span>
+                </Fragment>
+              ) : (
+                <span>{customNumber(finalProductPrice, "đ")} </span>
+              )}
+            </div>
+          </div>
+        </div>
+        <div className="shop-list-wrap mb-30">
+          <div className="row">
+            <div className="col-xl-4 col-md-5 col-sm-6">
+              <div className="product-list-image-wrap">
+                <div className="product-img">
+                  <Link
+                    to={process.env.PUBLIC_URL + "/product/" + product.pro_slug}
+                  >
+                    <img
+                      className="default-img"
+                      src={buildImage(product.pro_avatar)}
+                      alt={buildImage(product.pro_avatar)}
+                      onError={onErrorImage}
+                    />
+                    {product?.product_images?.length > 0 ? (
+                      <img
+                        className="hover-img"
+                        src={buildImage(product.product_images[0].path)}
+                        alt={buildImage(product.product_images[0].path)}
+                        onError={onErrorImage}
+                      />
+                    ) : (
+                      ""
+                    )}
+                  </Link>
+                  {product?.pro_sale || product.new ? (
+                    <div className="product-img-badges">
+                      {product?.pro_sale &&
+                      checkTimeNow(product?.sale_to) &&
+                      product.pro_sale ? (
+                        <span className="pink">-{product?.pro_sale}%</span>
+                      ) : (
+                        ""
+                      )}
+                      {product.new ? <span className="purple">New</span> : ""}
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="col-xl-8 col-md-7 col-sm-6">
+              <div className="shop-list-content">
+                <h3>
+                  <Link
+                    to={process.env.PUBLIC_URL + "/product/" + product.pro_slug}
+                  >
+                    {product.pro_name}
+                  </Link>
+                </h3>
+                <div className="product-list-price">
+                  {discountedPrice !== null ? (
+                    <Fragment>
+                      <span>{customNumber(finalDiscountedPrice, "đ")}</span>{" "}
+                      <span className="old">
+                        {customNumber(finalProductPrice, "đ")}
+                      </span>
+                    </Fragment>
+                  ) : (
+                    <span>{customNumber(finalProductPrice, "đ")} </span>
+                  )}
+                </div>
+                {product.rating && product.rating > 0 ? (
+                  <div className="rating-review">
+                    <div className="product-list-rating">
+                      <Rating ratingValue={product.rating} />
+                    </div>
                   </div>
+                ) : (
+                  ""
                 )}
-              </Accordion>
+                {product.pro_description ? (
+                  <p>{product.pro_description}</p>
+                ) : (
+                  ""
+                )}
+
+                <div className="shop-list-actions d-flex align-items-center">
+                  <div className="shop-list-btn btn-hover">
+                    {product.affiliateLink ? (
+                      <a
+                        href={product.affiliateLink}
+                        rel="noopener noreferrer"
+                        target="_blank"
+                      >
+                        {" "}
+                        Buy now{" "}
+                      </a>
+                    ) : product?.variation &&
+                      product?.variation?.length >= 1 ? (
+                      <Link
+                        to={`${process.env.PUBLIC_URL}/product/${product.id}`}
+                      >
+                        Select Option
+                      </Link>
+                    ) : product.pro_amount && product.pro_amount > 0 ? (
+                      <button
+                        onClick={() => addToCart(product, addToast)}
+                        className={
+                          cartItem !== undefined && cartItem.quantity > 0
+                            ? "active"
+                            : ""
+                        }
+                        disabled={
+                          cartItem !== undefined && cartItem.quantity > 0
+                        }
+                        title={
+                          cartItem !== undefined
+                            ? "Added to cart"
+                            : "Thêm giỏ hàng"
+                        }
+                      >
+                        {" "}
+                        <i className="pe-7s-cart"></i>{" "}
+                        {cartItem !== undefined && cartItem.quantity > 0
+                          ? "Added"
+                          : "Thêm giỏ hàng"}
+                      </button>
+                    ) : (
+                      <button disabled className="active">
+                        Out of Stock
+                      </button>
+                    )}
+                  </div>
+
+                  {/* <div className="shop-list-wishlist ml-10">
+										<button
+											className={ wishlistItem !== undefined ? "active" : "" }
+											disabled={ wishlistItem !== undefined }
+											title={
+												wishlistItem !== undefined
+													? "Added to wishlist"
+													: "Add to wishlist"
+											}
+											onClick={ () => addToWishlist( product, addToast ) }
+										>
+											<i className="pe-7s-like" />
+										</button>
+									</div>
+									<div className="shop-list-compare ml-10">
+										<button
+											className={ compareItem !== undefined ? "active" : "" }
+											disabled={ compareItem !== undefined }
+											title={
+												compareItem !== undefined
+													? "Added to compare"
+													: "Add to compare"
+											}
+											onClick={ () => addToCompare( product, addToast ) }
+										>
+											<i className="pe-7s-shuffle" />
+										</button>
+									</div> */}
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+      {/* product modal */}
+      <ProductModal
+        show={modalShow}
+        onHide={() => setModalShow(false)}
+        product={product}
+        currency={currency}
+        discountedprice={discountedPrice}
+        finalproductprice={finalProductPrice}
+        finaldiscountedprice={finalDiscountedPrice}
+        cartitem={cartItem}
+        wishlistitem={wishlistItem}
+        compareitem={compareItem}
+        addtocart={addToCart}
+        addtowishlist={addToWishlist}
+        addtocompare={addToCompare}
+        addtoast={addToast}
+      />
+    </Fragment>
   );
 };
 
-export default Order;
+ProductGridListSingle.propTypes = {
+  addToCart: PropTypes.func,
+  addToCompare: PropTypes.func,
+  addToWishlist: PropTypes.func,
+  cartItem: PropTypes.object,
+  compareItem: PropTypes.object,
+  currency: PropTypes.object,
+  product: PropTypes.object,
+  sliderClassName: PropTypes.string,
+  spaceBottomClass: PropTypes.string,
+  wishlistItem: PropTypes.object,
+  deleteFromWishlist: PropTypes.func,
+};
+
+export default ProductGridListSingle;
