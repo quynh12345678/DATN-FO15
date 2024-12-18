@@ -1,5 +1,14 @@
 import { toggleShowLoading } from "../../redux/actions/common";
+import axios from "axios";
 import { buildFilter, getMethod } from "../index";
+import { WEB_VALUE } from "../../helpers/constant";
+const axiosClient = axios.create({
+  baseURL: WEB_VALUE.API,
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify(),
+});
 
 export const getProducts = async (params) => {
   let filter = buildFilter(params);
@@ -8,6 +17,10 @@ export const getProducts = async (params) => {
 
 export const showProduct = async (id, params) => {
   return await getMethod(`product/show/${id}`, params);
+};
+
+export const showproductdt = async (id) => {
+  return await axiosClient.get(`${WEB_VALUE.API}/product/show/${id}`);
 };
 
 export const showProductDetail = async (
@@ -29,7 +42,6 @@ export const showProductDetail = async (
       dispatch(toggleShowLoading(false));
     }
   } catch (error) {
-    console.log(error);
     setProductData(null);
     if (dispatch) {
       dispatch(toggleShowLoading(false));
