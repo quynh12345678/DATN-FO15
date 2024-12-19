@@ -60,7 +60,7 @@ export const postMethod = async ( path, data ) =>
 		{
 			return {
 				status: 'error',
-				message: error.error || 'Invalid!'
+				message: error.error || 'Sản phẩm không còn tồn tại!'
 			}
 		} );
 }
