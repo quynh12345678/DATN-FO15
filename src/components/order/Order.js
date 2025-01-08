@@ -1,4 +1,4 @@
-import { message, Pagination } from "antd";
+import { Form, Input, message, Pagination } from "antd";
 import React, { useEffect, useState } from "react";
 import { Accordion, Card, Table } from "react-bootstrap";
 import { useDispatch } from "react-redux";
@@ -11,9 +11,14 @@ import {
   buildImage,
   onErrorImage,
 } from "../../services";
+import { Button, Modal } from "antd";
+import { useForm } from "antd/es/form/Form";
 
 const Order = (props) => {
   const [orders, setOrders] = useState([]);
+  const [itemId, setItemId] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [myForm] = useForm();
 
   useEffect(() => {
     getOrders();
@@ -26,15 +31,36 @@ const Order = (props) => {
       setOrders(response?.shopping?.data);
     }
   };
-  const cancelOrder = async (id) => {
-    const response = await TRANSACTION_SERVICE.changeStatus(id, -1);
+
+  const showModal = (item_id) => {
+    setItemId(item_id);
+    setIsModalOpen(true);
+  };
+
+  const handleOk = async () => {
+    var description_cancel = myForm.getFieldsValue()["description_cancel"];
+
+    const response = await TRANSACTION_SERVICE.changeStatus(
+      itemId,
+      -1,
+      description_cancel
+    );
 
     if (response?.status == "success") {
-      message.success("Hủy đơn thành công");
       getOrders();
     } else {
       message.error(response?.message || "Hủy đơn thất bại");
     }
+    let obj = {
+      description_cancel: "",
+    };
+    myForm.setFieldsValue(obj);
+    setIsModalOpen(false);
+    message.success("Hủy đơn thành công");
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
   };
 
   const completeOrder = async (id) => {
@@ -274,15 +300,60 @@ const Order = (props) => {
                                     {genPaymentType(item.tst_type)}
                                   </div>
                                 </div>
+                                {item.tst_status == -1 &&
+                                  item.description_cancel && (
+                                    <>
+                                      <div className="row mb-md-3 pt-md-3">
+                                        <div className="col-sm-9">
+                                          <span
+                                            style={{
+                                              fontWeight: 600,
+                                              fontSize: 18,
+                                            }}
+                                          >
+                                            Nguyên nhân hủy:
+                                          </span>
+                                        </div>
+                                        <div className="col-sm-3 text-right">
+                                          {item.description_cancel}
+                                        </div>
+                                      </div>
+                                    </>
+                                  )}
                                 {(item.tst_status == 5 ||
                                   item.tst_status == 6) && (
                                   <>
-                                    <button
+                                    <Button
                                       className="btn btn-danger"
-                                      onClick={() => cancelOrder(item.id)}
+                                      onClick={() => showModal(item.id)}
                                     >
                                       Hủy đơn hàng
-                                    </button>
+                                    </Button>
+                                    <Modal
+                                      title="Lý do hủy đơn hàng"
+                                      open={isModalOpen}
+                                      onOk={myForm.submit}
+                                      onCancel={handleCancel}
+                                    >
+                                      <Form
+                                        className="p-3"
+                                        name="myForm"
+                                        id="myForm"
+                                        form={myForm}
+                                        onFinish={handleOk}
+                                      >
+                                        <Form.Item
+                                          name="description_cancel"
+                                          rules={[{ required: true }]}
+                                          className=" d-block"
+                                        >
+                                          <Input
+                                            className=" mb-0"
+                                            placeholder="Nhập lý do"
+                                          />
+                                        </Form.Item>
+                                      </Form>
+                                    </Modal>
                                   </>
                                 )}
                                 {item.tst_status == 3 && (
