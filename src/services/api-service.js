@@ -57,7 +57,7 @@ export const postMethod = async (path, data) => {
     .catch((error) => {
       return {
         status: "error",
-        message: error.error || "Sản phẩm ko còn tồn tại!",
+        message: error.error || "Invalid!",
       };
     });
 };
