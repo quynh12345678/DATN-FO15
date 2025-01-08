@@ -309,7 +309,8 @@ const Checkout = ({ location, cartItems, currency, dispatch }) => {
                       />
                     </div>
                     <div className="item-empty-area__text">
-                      Đơn hàng đặt thành công <br />{" "}
+                      Đơn hàng đặt thành công <br />
+                      {"/ "}
                       <Link to={process.env.PUBLIC_URL + "/shop"}>
                         TIẾP MỤC MUA SẮM
                       </Link>
