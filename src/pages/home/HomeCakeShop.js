@@ -51,12 +51,12 @@ const HomeCakeShop = (paramHeader) => {
         {/* tab product */}
         <TabProductFourteen products={products?.productsWatch} />
 
-        <div className="productHome">
+        {/* <div className="productHome">
           <TabProduct
             avatar="/view/img/496-2_6009_HasThumb_Thumb.png"
             products={products?.listProduct1}
           />
-        </div>
+        </div> */}
         <div className="productHome">
           <TabProduct
             avatar="/view/img/z5891779370356_160a94456d626e576a763e47be4b4913_7744_HasThumb_Thumb.jpg"
