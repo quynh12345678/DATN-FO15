@@ -80,6 +80,7 @@ export const CheckoutForm = (props) => {
           });
           if (response?.status === "success") {
             var minimum = response?.content?.minimum;
+            var maximum = response?.content?.maximum;
             if (response?.content === null) {
               addToast("Không tìm thấy voucher", {
                 appearance: "error",
@@ -91,6 +92,15 @@ export const CheckoutForm = (props) => {
 
             if (parseInt(cartTotalPrice) < parseInt(minimum)) {
               addToast("Đơn không đạt giá trị đơn hàng tối thiểu", {
+                appearance: "error",
+                autoDismiss: true,
+              });
+              dispatch(toggleShowLoading(false));
+              return;
+            }
+
+            if (parseInt(cartTotalPrice) > parseInt(maximum)) {
+              addToast("Vượt qua giá trị giảm giá tối đa", {
                 appearance: "error",
                 autoDismiss: true,
               });

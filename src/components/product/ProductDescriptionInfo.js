@@ -28,7 +28,7 @@ const ProductDescriptionInfo = ({
   const [selectedProductSize, setSelectedProductSize] = useState("37");
   const [quantityCount, setQuantityCount] = useState(1);
 
-  const productCartQty = getProductCartQuantity(
+  let productCartQty = getProductCartQuantity(
     cartItems,
     product,
     selectedProductColor,
@@ -54,6 +54,29 @@ const ProductDescriptionInfo = ({
     setMenus(response);
   };
 
+  const addCart = (
+    product,
+    addToast,
+    quantityCount,
+    selectedProductColor,
+    selectedProductSize
+  ) => {
+    if (productCartQty >= product.pro_amount) {
+      addToast("Hiện tại chúng tôi không đủ số lượng", {
+        appearance: "error",
+        autoDismiss: true,
+      });
+      return;
+    }
+    addToCart(
+      product,
+      addToast,
+      quantityCount,
+      selectedProductColor,
+      selectedProductSize
+    );
+    productCartQty = productCartQty + 1;
+  };
   const handleSetAttributes = (slug, attributeId) => {
     if (slug == "mau") {
       setSelectedProductColor(attributeId);
@@ -149,7 +172,7 @@ const ProductDescriptionInfo = ({
           {product.pro_amount && product.pro_amount > 0 ? (
             <button
               onClick={() =>
-                addToCart(
+                addCart(
                   product,
                   addToast,
                   quantityCount,
