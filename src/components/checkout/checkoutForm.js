@@ -80,6 +80,7 @@ export const CheckoutForm = (props) => {
           });
           if (response?.status === "success") {
             var minimum = response?.content?.minimum;
+            var maximum = response?.content?.maximum;
             if (response?.content === null) {
               addToast("Không tìm thấy voucher", {
                 appearance: "error",
@@ -97,6 +98,15 @@ export const CheckoutForm = (props) => {
               dispatch(toggleShowLoading(false));
               return;
             }
+
+            // if (parseInt(cartTotalPrice) > parseInt(maximum)) {
+            //   addToast("Vượt qua giá trị giảm giá tối đa", {
+            //     appearance: "error",
+            //     autoDismiss: true,
+            //   });
+            //   dispatch(toggleShowLoading(false));
+            //   return;
+            // }
           }
         }
         e.voucher = props.voucher;
@@ -140,6 +150,7 @@ export const CheckoutForm = (props) => {
       <Form.Item
         name="tst_name"
         label="Họ và Tên"
+        labelCol={{ span: 4 }}
         rules={[{ required: true }]}
         className=" d-block"
       >
@@ -148,6 +159,7 @@ export const CheckoutForm = (props) => {
 
       <Form.Item
         name="tst_email"
+        labelCol={{ span: 2 }}
         label="Email"
         rules={[{ required: true, type: "email" }]}
         className=" d-block"
@@ -158,6 +170,7 @@ export const CheckoutForm = (props) => {
       <Form.Item
         name="tst_phone"
         label="Số điện thoại"
+        labelCol={{ span: 5 }}
         rules={[{ required: true, pattern: REGEX_PHONE }]}
         className=" d-block"
       >
@@ -167,13 +180,14 @@ export const CheckoutForm = (props) => {
       <Form.Item
         name="tst_address"
         label="Địa chỉ"
+        labelCol={{ span: 3 }}
         rules={[{ required: true }]}
         className=" d-block"
       >
         <Input className=" mb-0" placeholder="Nhập địa chỉ" />
       </Form.Item>
 
-      <Form.Item name="tst_note" label="Ghi chú" className=" d-block">
+      <Form.Item name="tst_note" label="Ghi chú" className=" d-block" labelCol={{ span: 3 }}>
         <TextArea rows={5} className=" mb-0" placeholder="Nhập ghi chú" />
       </Form.Item>
     </Form>
