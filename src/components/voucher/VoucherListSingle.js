@@ -34,9 +34,10 @@ const VoucherListSingle = ({
 				</div>
 
 				<div className="voucher-title">
-					<p><b>Voucher</b>:{voucher.name}</p>
-					<p><b>Giảm giá</b>:{voucher.amount} %</p>
-					<p><b>Giá trị đơn hàng tối thiểu</b>:{customNumber(voucher.minimum, 'đ')}</p>
+					<p><b>Voucher</b> :{voucher.name}</p>
+					<p><b>Giảm giá</b> :{voucher.amount} %</p>
+					<p><b >Giá trị đơn hàng tối thiểu</b> :{customNumber(voucher.minimum, 'đ')}</p>
+					<p><b>Giảm giá tối đa</b> :{customNumber(voucher.maximum, 'đ')}</p>
 				</div>
 				<div className=" btn voucher-apdung">
 					<Link className="apvoucher" onClick={() => {
