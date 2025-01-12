@@ -87,6 +87,7 @@ const ProductDescriptionInfo = ({
   return (
     <div className="product-details-content ml-70">
       <h2>{product.pro_name}</h2>
+      <p>Số lượng còn lại: {product.pro_amount}</p>
       <div className="product-details-price">
         {product?.pro_sale && checkTime ? (
           <Fragment>
@@ -94,7 +95,7 @@ const ProductDescriptionInfo = ({
             <span className="old">{customNumber(finalProductPrice, "đ")}</span>
           </Fragment>
         ) : (
-          <span className="not-sale">
+          <span className="not-sale" style={{ color: "red" }}>
             {customNumber(finalProductPrice, "đ")}{" "}
           </span>
         )}
