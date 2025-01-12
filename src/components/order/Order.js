@@ -350,6 +350,7 @@ const Order = (props) => {
                                           <Input
                                             className=" mb-0"
                                             placeholder="Nhập lý do"
+                                            maxLength={52}
                                           />
                                         </Form.Item>
                                       </Form>
