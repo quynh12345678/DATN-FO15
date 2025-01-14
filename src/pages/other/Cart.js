@@ -6,6 +6,7 @@ import MetaTags from "react-meta-tags";
 import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
 import { connect } from "react-redux";
 import { getDiscountPrice } from "../../helpers/product";
+import debounce from "lodash.debounce";
 import {
   addToCart,
   decreaseQuantity,
@@ -30,7 +31,28 @@ const Cart = ({
   const [quantityCount] = useState(1);
   const { addToast } = useToasts();
   const { pathname } = location;
+  const [lastClickTime, setLastClickTime] = useState(0); // Lưu thời gian nhấn nút "+"
   let cartTotalPrice = 0;
+
+  const handleAddToCart = (cartItem) => {
+    const currentTime = Date.now();
+    // Nếu lần nhấn trước đó ít hơn 5 giây thì không cho phép bấm nữa
+    if (currentTime - lastClickTime < 3000) {
+      return; // Bỏ qua nếu chưa đủ 5 giây
+    }
+
+    // Cập nhật lại thời gian nhấn lần này
+    setLastClickTime(currentTime);
+
+    // Tiến hành thêm sản phẩm vào giỏ hàng
+    addToCart(
+      cartItem,
+      addToast,
+      quantityCount,
+      cartItem.selectedProductColor,
+      cartItem.selectedProductSize
+    );
+  };
 
   return (
     <Fragment>
@@ -97,6 +119,7 @@ const Cart = ({
                                   finalDiscountedPrice * cartItem.quantity)
                               : (cartTotalPrice +=
                                   finalProductPrice * cartItem.quantity);
+
                             return (
                               <tr key={key}>
                                 <td className="product-thumbnail">
@@ -182,15 +205,7 @@ const Cart = ({
                                     />
                                     <button
                                       className="inc qtybutton"
-                                      onClick={() =>
-                                        addToCart(
-                                          cartItem,
-                                          addToast,
-                                          quantityCount,
-                                          cartItem.selectedProductColor,
-                                          cartItem.selectedProductSize
-                                        )
-                                      }
+                                      onClick={() => handleAddToCart(cartItem)} // Sử dụng hàm này để kiểm tra thời gian
                                       disabled={
                                         cartItem !== undefined &&
                                         cartItem.quantity &&
